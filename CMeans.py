@@ -89,7 +89,7 @@ def cmeans(samples, k):
     click.echo('Start main classification loop')
     change_membership = 0
     generation = 0
-    while(change_membership < 3 and generation <= 1):
+    while(change_membership < 3 and generation < 30):
 
         generation += 1
 
@@ -139,28 +139,35 @@ def cluster_images():
 
     dire = os.path.join('ImagensTeste')
     images_in = os.listdir(dire)
-    # for image in images_in:
-    image = images_in[0]
-    img = Image.open(os.path.join(dire, image))
-    width, height = img.size
-    pixels = list(zip(*list(img.getdata())))
+    for image in images_in:
+        click.style('Clusterizing image {}'.format(image), fg='y')
+        image = images_in[0]
+        img = Image.open(os.path.join(dire, image))
+        width, height = img.size
+        pixels = list(zip(*list(img.getdata())))
 
-    pixels, centroids = cmeans(pixels, k=3)
+        pixels, centroids = cmeans(pixels, k=3)
 
-    pixels = list(zip(list(pixels)))
+        pixels = list(zip(*list(pixels)))
 
-    click.secho('Generating new image file')
-    newPixels = [centroids.get(pixel[-1]) for pixel in pixels]
-    newPixels = np.array(newPixels)
-    newImage = Image.fromarray(newPixels.reshape(width, height))
-    newImage.save(image + '_converted', 'JPEG')
+        for key in centroids.keys():
+            coordinate = centroids.get(key)
+            newCoord = tuple([int(coord) for coord in coordinate])
+            centroids[key] = newCoord
+
+        click.secho('Centroids rounded: {}'.format(centroids), fg='yellow')
+
+        click.secho('Generating new image file for {}'.format(image))
+
+        newPixels = [centroids.get(pixel[-1]) for pixel in pixels]
+        newPixels = np.array(newPixels).reshape((height, width, 3))
+        newImage = Image.fromarray(newPixels.astype('uint8'))
+        newImageName = 'cluster' + image
+        newImage.save(newImageName, 'JPEG')
+
+        click.secho('New image file saved as {}'.format(newImageName), fg='green')
 
     click.secho('Finished alghorithm.', fg='green')
-
-
-
-
-
 
 
 if __name__ == '__main__':
