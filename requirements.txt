@@ -1,4 +1,4 @@
-matplotlib=latest
-click=latest
-numpy=latest
-pillow=latest
+matplotlib
+click
+numpy
+Pillow
