@@ -141,7 +141,6 @@ def cluster_images():
     images_in = os.listdir(dire)
     for image in images_in:
         click.style('Clusterizing image {}'.format(image), fg='y')
-        image = images_in[0]
         img = Image.open(os.path.join(dire, image))
         width, height = img.size
         pixels = list(zip(*list(img.getdata())))
