@@ -70,7 +70,6 @@ def update_membership(samples, centroids):
         for centroid in centroids.keys():
             dists += [euclidian(samples[i], centroids.get(centroid))]
 
-        sumDists = sum(dists)
         newMembership[i][:] = [update(distU, dists) for distU in dists]
 
     return newMembership
@@ -90,7 +89,7 @@ def cmeans(samples, k):
     click.echo('Start main classification loop')
     change_membership = 0
     generation = 0
-    while(change_membership < 3 and generation <= 30):
+    while(change_membership < 3 and generation <= 1):
 
         generation += 1
 
@@ -148,11 +147,16 @@ def cluster_images():
 
     pixels, centroids = cmeans(pixels, k=3)
 
-    newPixels = np.array([centroids.get(pixel[-1]) for pixel in pixels])
+    pixels = list(zip(list(pixels)))
+
+    click.secho('Generating new image file')
+    newPixels = [centroids.get(pixel[-1]) for pixel in pixels]
+    newPixels = np.array(newPixels)
     newImage = Image.fromarray(newPixels.reshape(width, height))
     newImage.save(image + '_converted', 'JPEG')
 
-    print(centroids)
+    click.secho('Finished alghorithm.', fg='green')
+
 
 
 
