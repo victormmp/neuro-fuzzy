@@ -140,7 +140,7 @@ def cluster_images():
     dire = os.path.join('ImagensTeste')
     images_in = os.listdir(dire)
     for image in images_in:
-        click.style('Clusterizing image {}'.format(image), fg='y')
+        click.secho('Clusterizing image {}'.format(image), fg='yellow')
         img = Image.open(os.path.join(dire, image))
         width, height = img.size
         pixels = list(zip(*list(img.getdata())))
